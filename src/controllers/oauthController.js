@@ -2,10 +2,12 @@ const oauthController = async (req, res) => {
     const client_id = req.query.client_id
     if (!client_id) {
         res.end("client_id must be specified")
+        res.redirect(`/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}`)
     }
     const redirect_uri = req.query.redirect_uri
     if (!redirect_uri) {
         res.end("redirect_uri must be specified")
+        res.redirect(`/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}`)
     }
     const sessionToken = req.cookies.authorization
     if (!sessionToken) {
