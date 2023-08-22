@@ -4,14 +4,12 @@ const bcrypt = require("bcrypt")
 
 const loginUser = async (email, password) => {
     const user = await validateEmail(email)
-    if (!user) {
-        console.log("no user with that email address")
+    if (!user || user.length === 0) {
         return false
     }
     try {
         const userDetails = user[0]
         const hashPassword = userDetails["password"]
-        //const comparePassword = await verifyCredentials(password, hashPassword)
         const comparePassword = await bcrypt.compare(password, hashPassword)
 
         if (comparePassword) {
@@ -22,7 +20,7 @@ const loginUser = async (email, password) => {
         } else {
             return null
         }
-        
+
     } catch (error) {
         return error
     }

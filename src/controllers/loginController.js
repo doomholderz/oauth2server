@@ -6,15 +6,28 @@ const loginController = async (req, res) => {
     const password = req.body.password
 
     const oauthRedirect = req.query.redirect_uri
-    console.log("oauth " + oauthRedirect)
+    const client_id = req.query.client_id
+
+    const oauthConditional = (result) => {
+        if (oauthRedirect) {
+            if (client_id) {
+                res.cookie("authorization", result).status(200).redirect(`/oauth/authorize?redirect_uri=${oauthRedirect}&client_id=${client_id}`)
+            } else {
+                res.cookie("authorization", result).status(200).redirect(`/oauth/authorize?redirect_uri=${oauthRedirect}`)
+            }
+        } else {
+            res.cookie("authorization", result).status(200).redirect("/register")
+        }
+    }
 
     const loggedIn = await loginService(email, password)
     if (!loggedIn) {
-        res.end("unsucesful in controller login")
+        res.end("Unsuccessful authentication.")
         return
     }
     await sessionService(loggedIn.id)
-        .then((result) => res.cookie("authorization", result).status(200).end("success"))
+        //.then((result) => res.cookie("authorization", result).status(200).redirect("/register"))
+        .then((result) => oauthConditional(result))
 }
 
 module.exports = loginController
