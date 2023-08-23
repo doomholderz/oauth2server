@@ -1,9 +1,11 @@
 const router = require("express").Router()
-const oauthController = require("../controllers/oauthController")
-const consentController = require("../controllers/consentController")
+const oauthController = require("../controllers/oauth/authorization")
+const consentController = require("../controllers/oauth/consentController")
+const tokenController = require("../controllers/oauth/tokenController")
 
 router.get("/authorize", oauthController)
 router.post("/consent", consentController)
+router.post("/token", tokenController)
 router.get("/consent", (req, res) => {
     const redirect_uri = req.query.redirect_uri
     const client_id = req.query.client_id

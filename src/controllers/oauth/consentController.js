@@ -1,4 +1,4 @@
-const consent = require("../services/oauth")
+const consent = require("../../services/oauth")
 const jwt_decode = require("jwt-decode")
 
 const consentController = async (req, res) => {

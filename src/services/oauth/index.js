@@ -37,11 +37,14 @@ const generateAuthorizationCode = () => {
     return authorizationCode
 }
 
-const storeAuthorizationCode = async (authorizationCode, client_id) => {
+const storeAuthorizationCode = async (authorizationCode, client_id, user_id, scopes, expiration) => {
     try {
         Authorization.create({
             authorizationCode: authorizationCode,
-            clientId: client_id
+            clientId: client_id,
+            userId: user_id,
+            scopes: scopes,
+            expiration: expiration
         })
     } catch (error) {
         return error
