@@ -1,0 +1,24 @@
+how I want the flow to work:
+- user visits client website localhost:9000 - /GET /home
+    - this is assuming at this point that there is an authentication mechanism in client website that allows sessions to be maintained
+- client website has button to link with 'resource_website'
+    - this resource website is a site that the user already has an account with
+    - this resource website stores some information about the user
+    - the user is able to authenticate with this resource website
+    - the client website knows how to pull information needed from resource website
+- the user clicks this 'link resource website' button
+- this sends a /GET request to /oauth/authorization of resource website
+- if the user does not have an active session in browser
+    - this redirects to the user /login screen of resource website
+    - user authenticates
+- if the user has not previously consented that this client should have access to their account [scopes] in resource website 
+    - this redirects to the user /consent screen of resource website
+    - user consents 
+- this now generates authorization code
+- the resource website now redirects to /GET redirect_uri/callback?code=x
+- client website has handler on this endpoint
+- the authorization code will not be stored, instead it is used to immediately generate the access token
+- access token is generate
+- redirects to redirect_uri with the access token sent as query parameter
+- client app watches for requests to /callback that have 'token=' as a query parameter 
+    - it will then store this in a database using the session_token user_id from the users' session with the client application

@@ -13,9 +13,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ARRAY(DataTypes.STRING)
         },
         expiration: {
-            type: DataTypes.DATE,
+            type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: () => new Date(Date.now() + 60*60*1000)
+            defaultValue: () => (new Date(Date.now() + 60*60*1000).toISOString())
         }
       })
 }
@@ -27,7 +27,7 @@ CREATE TABLE "Authorizations" (
   "clientId" VARCHAR NOT NULL,
   "userId" VARCHAR NOT NULL,
   "scopes" VARCHAR[] NOT NULL,
-  "expiration" DATE NOT NULL,
+  "expiration" VARCHAR NOT NULL,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -9,7 +9,14 @@ const generateAccessToken = (user_id, client_id, scope) => {
         exp: 0
     }
 
-    const accessToken = jwt.sign(accessTokenPayload, "foo")
+    const accessTokenJWT = jwt.sign(accessTokenPayload, "foo")
+
+    const accessToken = {
+        access_token: accessTokenJWT,
+        token_type: "bearer",
+        expires_in: 3600,
+        scope: scope
+    }
 
     return accessToken
 }
