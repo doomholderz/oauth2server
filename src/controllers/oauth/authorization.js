@@ -2,19 +2,22 @@ const consent = require("../../services/oauth")
 const jwt_decode = require("jwt-decode")
 
 const oauthController = async (req, res) => {
-    const client_id = req.query.client_id
-    if (!client_id) {
-        res.redirect(`/oauth/authorize`)
-        return
-    }
     const redirect_uri = req.query.redirect_uri
     if (!redirect_uri) {
-        res.redirect(`/oauth/authorize`)
+        //res.redirect(`/oauth/authorize`)
+        res.end()
         return
     }
+
+    const client_id = req.query.client_id
+    if (!client_id) {
+        res.end()
+        res.redirect(`${redirect_uri}?error=no_client_id`)
+        return
+    }
+    
     const sessionToken = req.cookies.authorization
     if (!sessionToken) {
-        console.log("no session")
         res.redirect(`/login?client_id=${client_id}&redirect_uri=${redirect_uri}`)
         return
     }
@@ -27,7 +30,6 @@ const oauthController = async (req, res) => {
 
     const consentGiven = await consent.queryConsent(user_id, client_id)
     if (!consentGiven[0]) {
-        console.log("no consent given by user")
         res.redirect(`/oauth/consent?client_id=${client_id}&redirect_uri=${redirect_uri}`)
         return
     }
@@ -38,7 +40,7 @@ const oauthController = async (req, res) => {
     // for now there is no limit on authorization codes that can be requested
     const authorizationCode = consent.generateAuthorizationCode()
     consent.storeAuthorizationCode(authorizationCode, client_id, user_id, [])
-    res.send(authorizationCode)
+    res.redirect(`${redirect_uri}?code=${authorizationCode}`)
 }
 
 module.exports = oauthController

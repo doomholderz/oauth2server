@@ -16,22 +16,20 @@ const tokenController = async (req, res) => {
         console.log("Credentials incorrect")
         return
     }
+    console.log("authenticated")
     const authorizationCode = await authorizationCodeLookup(client_id, authorization_code)
 
     if (!authorizationCode[0]) {
         console.log("Credentials correct, but authorization code doesn't exist")
         return
     }
+    console.log("authorization code found")
 
     const user_id = authorizationCode[0].userId
     const scopes = authorizationCode[0].scopes
 
     const accessToken = generateAccessToken(user_id, client_id, scopes)
-    console.log(accessToken)
-
-    // should redirect with the access token in authorization header (I think?)
-    // res.header("Authorization", accessToken)
-    // res.redirect(redirect_uri)
+    res.send(accessToken)
 }
 
 module.exports = tokenController

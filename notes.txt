@@ -1,24 +1,25 @@
-how I want the flow to work:
-- user visits client website localhost:9000 - /GET /home
-    - this is assuming at this point that there is an authentication mechanism in client website that allows sessions to be maintained
-- client website has button to link with 'resource_website'
-    - this resource website is a site that the user already has an account with
-    - this resource website stores some information about the user
-    - the user is able to authenticate with this resource website
-    - the client website knows how to pull information needed from resource website
-- the user clicks this 'link resource website' button
-- this sends a /GET request to /oauth/authorization of resource website
-- if the user does not have an active session in browser
-    - this redirects to the user /login screen of resource website
-    - user authenticates
-- if the user has not previously consented that this client should have access to their account [scopes] in resource website 
-    - this redirects to the user /consent screen of resource website
-    - user consents 
-- this now generates authorization code
-- the resource website now redirects to /GET redirect_uri/callback?code=x
-- client website has handler on this endpoint
-- the authorization code will not be stored, instead it is used to immediately generate the access token
-- access token is generate
-- redirects to redirect_uri with the access token sent as query parameter
-- client app watches for requests to /callback that have 'token=' as a query parameter 
-    - it will then store this in a database using the session_token user_id from the users' session with the client application
+What I'm trying to achieve with this project:
+- Full stack development: while the goal is the backend, I'd like to gain experience building user interfaces through this project. 
+- Security: I want to have hands on experience building user authentication, authorization, and OAuth2.0 flows
+- Client and server work: I want experience in building something clients want (an OAuth2.0 server for fetching user data), and then building something customers want (a client application for making use of their data in the third-party application)
+- Testing: I want experience writing tests using popular test frameworks like Mocha
+- Deployment: I'd like to get to the point of deploying this via Docker to better understand the development lifecycle from a developer perspective
+
+---
+
+KEY AREAS TO WORK OUT:
+- how do redirects work around redirect_url? are we just hanging on redirect_url screen while it makes the /token request, and then having it handle the redirect back to whatever page it thinks we were at (e.g. /transactions)?
+- how are access tokens to be stored per user, so that a user's session only has access to that users' access tokens? are we trusting sessions here, or do we want to explore user context?
+    - benefit to using the JWT is there's no database overhead, and this is entirely stateless and free from consuming more memory
+
+- user signs in to client application
+- session token is generated in client application, with user id as a claim 
+- user navigates to /transactions
+- node.js for this page will attempt to fetch access_token from database for the user the session relates to
+- if access token exists, then we will be using this to fetch data from bank, and return this to the user (worry about this part later)
+- if access token deosn't exist, render a 'connect to bank' button that will make the request to bank
+
+example flow with Strava -> Google 
+- click 'connect with Google' which sends request to /oauth/auth?params
+- sets the redirect url as https://www.strava.com/o_auth/google
+
