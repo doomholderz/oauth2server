@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+      <h1>transactions</h1>
+      <ul>
+        <% for(var i=0; i<transactions.length; i++) { %>
+            <li><%= transactions[i].id %><br><%= transactions[i].cost %></li>
+            <% } %>
+      </ul>
+    </body>
+</html>

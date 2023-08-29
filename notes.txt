@@ -19,7 +19,15 @@ KEY AREAS TO WORK OUT:
 - if access token exists, then we will be using this to fetch data from bank, and return this to the user (worry about this part later)
 - if access token deosn't exist, render a 'connect to bank' button that will make the request to bank
 
-example flow with Strava -> Google 
-- click 'connect with Google' which sends request to /oauth/auth?params
-- sets the redirect url as https://www.strava.com/o_auth/google
-
+Other flows to do:
+- client Credentials:
+    - client authenticates directly with IdP using client_id and client_secret
+    - clietn gets access token from IdP as a result
+    - give access token to oauth2 server
+    - oauth2 sends to IdP to get resources
+- implicit code
+    - standard authorization code flow, but skip authorization code bit lol
+- resource owner password:
+    - user signs in to client app
+    - client app requests to idp using user credentials, client id, and client secret
+    - access token sent to client app, sent to oauth2 server
